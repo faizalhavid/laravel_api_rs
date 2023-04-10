@@ -11,6 +11,6 @@ class Poliklinik extends Model
     protected $guarded = ['id'];
     public $timestamps = false;
     public function dokter(){
-        return $this->hasOne(Poliklinik::class);
+        return $this->hasOne(Dokter::class);
     }
 }

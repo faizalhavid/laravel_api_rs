@@ -77,27 +77,51 @@ class SpesialisController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Spesialis $spesialis)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSpesialisRequest $request, Spesialis $spesialis)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+            'nama' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation',
+                'error' => $validator->errors(),
+            ], 422);
+        }
+        $spesialis = Spesialis::findOrFail($id);
+        $spesialis->update([
+            'id' => $request->id,
+            'nama' => $request->nama,
+        ]);
+
+        return response()->json([
+            'message' => 'update Spesialis Data successful',
+            'data' => $spesialis,
+        ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Spesialis $spesialis)
+    public function destroy($id)
     {
-        //
+        try{
+            $spesialis = Spesialis::find($id);
+            $spesialis->delete();
+            return ResponseFormatter::success([
+                'message' => 'Delete Spesalis data successful',
+            ],'Delete Spesalis data successful',500);
+        } catch(QueryException $error) {
+            return ResponseFormatter::error([
+                'message' => 'something went wrong',
+                'error' => $error,
+            ], 'Spesalis Data not deleted', 500);
+        }
     }
 }

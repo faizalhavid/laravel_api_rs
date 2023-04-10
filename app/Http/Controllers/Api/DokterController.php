@@ -85,7 +85,7 @@ class DokterController extends Controller
         $dokter = Dokter::findOrFail($id);
         // $error = ResponseFormatter::error();
         if (is_null($dokter)){
-            return ResponseFormatter::error([                'message' => 'something went wrong',
+            return ResponseFormatter::error(['message' => 'something went wrong',
         ], 'Dokter data is null ', 422);
         }else {
             return response()->json([
@@ -148,7 +148,7 @@ class DokterController extends Controller
             return ResponseFormatter::error([
                 'message' => 'something went wrong',
                 'error' => $error,
-            ], 'Thematic Data not deleted', 500);
+            ], 'Dokter Data not deleted', 500);
         }
     }
 }

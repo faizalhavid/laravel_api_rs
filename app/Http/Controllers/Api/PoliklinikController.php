@@ -84,26 +84,52 @@ class PoliklinikController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Poli $poli)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePoliRequest $request, Poli $poli)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|integer',
+            'nama' => 'required|string',
+            'code_ruangan' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation',
+                'error' => $validator->errors(),
+            ], 422);
+        }
+        $poliklinik = Poliklinik::findOrFail($id);
+        $poliklinik->update([
+            'id' => $request->id,
+            'nama' => $request->nama,
+            'code_ruangan' => $request->code_ruangan,
+        ]);
+
+        return response()->json([
+            'message' => 'Update Poliklinik Data successful',
+            'data' => $poliklinik,
+        ], 200);
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Poli $poli)
+    public function destroy($id)
     {
-        //
+        try{
+            $poliklinik =Poliklinik::find($id);
+            $poliklinik->delete();
+            return ResponseFormatter::success([
+                'message' => 'Delete poliklinik data successful',
+            ],'Delete Poliklinik data successful',500);
+        } catch(QueryException $error) {
+            return ResponseFormatter::error([
+                'message' => 'something went wrong',
+                'error' => $error,
+            ], 'Poliklinik Data not deleted', 500);
+        }
     }
 }
